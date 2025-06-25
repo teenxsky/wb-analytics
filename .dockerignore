@@ -1,0 +1,6 @@
+.venv/
+.gitignore
+README.md
+node_modules/
+.output/
+.nuxt/
