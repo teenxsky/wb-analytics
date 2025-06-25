@@ -1,0 +1,119 @@
+name: wb-analytics
+
+services:
+  nginx:
+    container_name: nginx
+    build:
+      context: ../../
+      dockerfile: ./deployments/prod/images/nginx.Dockerfile
+    command: ["nginx", "-g", "daemon off;"]
+    hostname: ${DOCKER_NGINX_HOST}
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    volumes:
+      - static_files:/backend/staticfiles/
+    environment:
+      - TZ=${TZ}
+      - APP_PORT=${APP_PORT}
+
+      - DOCKER_NGINX_HOST=${DOCKER_NGINX_HOST}
+      - DOCKER_BACKEND_HOST=${DOCKER_BACKEND_HOST}
+      - DOCKER_FRONTEND_HOST=${DOCKER_FRONTEND_HOST}
+
+      - BACKEND_BASE=${BACKEND_BASE}
+      - FRONTEND_BASE=${FRONTEND_BASE}
+      - DOCKER_BACKEND_PORT=${DOCKER_BACKEND_PORT}
+      - DOCKER_FRONTEND_PORT=${DOCKER_FRONTEND_PORT}
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_started
+
+  backend:
+    container_name: backend
+    build:
+      context: ../../
+      dockerfile: ./deployments/prod/images/backend.Dockerfile
+    command:
+      [
+        "poetry",
+        "run",
+        "gunicorn",
+        "config.wsgi",
+        "--preload",
+        "--max-requests",
+        "3000",
+        "--max-requests-jitter",
+        "1500",
+        "--bind",
+        "0.0.0.0:${DOCKER_BACKEND_PORT}",
+        "--pid",
+        "gunicorn.pid",
+      ]
+    hostname: ${DOCKER_BACKEND_HOST}
+    expose:
+      - ${DOCKER_BACKEND_PORT}
+    volumes:
+      - static_files:/backend/staticfiles/
+    environment:
+      - APP_PORT=${APP_PORT}
+      - BACKEND_BASE=${BACKEND_BASE}
+      - FRONTEND_BASE=${FRONTEND_BASE}
+
+      - DOCKER_BACKEND_HOST=${DOCKER_BACKEND_HOST}
+      - DOCKER_POSTGRES_HOST=${DOCKER_POSTGRES_HOST}
+
+      - DOCKER_BACKEND_PORT=${DOCKER_BACKEND_PORT}
+      - DOCKER_POSTGRES_PORT=${DOCKER_POSTGRES_PORT}
+
+      - TZ=${TZ}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
+      - DJANGO_DEBUG=${DJANGO_DEBUG}
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_LOGGING=${DJANGO_LOGGING}
+      - DJANGO_LOG_LEVEL=${DJANGO_LOG_LEVEL}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    container_name: postgres
+    build:
+      context: ../../
+      dockerfile: ./deployments/prod/images/postgres.Dockerfile
+    command: ["postgres", "-c", "port=${DOCKER_POSTGRES_PORT}"]
+    hostname: ${DOCKER_POSTGRES_HOST}
+    expose:
+      - ${DOCKER_POSTGRES_PORT}
+    volumes:
+      - pg-data:/var/lib/postgresql/data/
+    environment:
+      - TZ=${TZ}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "-d",
+          "${POSTGRES_DB}",
+          "-U",
+          "${POSTGRES_USER}",
+          "-h",
+          "${DOCKER_POSTGRES_HOST}",
+          "-p",
+          "${DOCKER_POSTGRES_PORT}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+volumes:
+  pg-data:
+  static_files:
