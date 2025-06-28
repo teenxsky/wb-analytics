@@ -100,8 +100,8 @@ class WildberriesParser:
 
         Args:
             query (str): The search term to look for products.
-            page (int, optional): The page number for pagination. Defaults to 1.
-            limit (int, optional): Maximum number of products to return. Defaults to 100.
+            page (int, optional): The page number for pagination. Default: 1.
+            limit (int, optional): Maximum number of products to return. Default: 100.
 
         Returns:
             list: A list of product dictionaries from the Wildberries API.
