@@ -1,0 +1,7 @@
+{% extends "admin/change_list.html" %} {% block object-tools %}
+<div>
+  <a class="button" href="{% url 'admin:parse-wb-products' %}"
+    >Parse Wildberries</a
+  >
+</div>
+{{ block.super }} {% endblock %}

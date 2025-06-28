@@ -125,6 +125,10 @@ createsuperuser-dev: ## Create a superuser in the development environment
 	@$(COMPOSE_DEV) exec backend sh -c \
 	"cd src && poetry run python manage.py createsuperuser"
 
+.PHONY: shell-backend-dev
+shell-backend-dev: ## Start a shell in the development environment
+	@$(COMPOSE_DEV) exec backend sh
+
 .PHONY: run-tests-dev
 run-tests-dev: ## Run tests for the development environment
 	@$(COMPOSE_DEV) exec backend sh -c \
