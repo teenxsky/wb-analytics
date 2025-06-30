@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Project apps
+    'apps.products',
     # Third-party apps
     'drf_yasg',
     'corsheaders',

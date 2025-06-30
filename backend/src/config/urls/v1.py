@@ -1,10 +1,13 @@
-from django.urls import path
+from django.urls import include, path
 
 from config.yasg import docs_schema_view_v1
 
 __all__ = ['urlpatterns']
 
-apps_patterns_v1 = []
+
+apps_patterns_v1 = [
+    path('', include('apps.products.urls')),
+]
 
 third_party_patterns_v1 = [
     path(

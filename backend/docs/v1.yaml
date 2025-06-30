@@ -1,0 +1,122 @@
+swagger: "2.0"
+info:
+  title: Wb Analytics API
+  description: Documentation API
+  termsOfService: https://www.google.com/policies/terms/
+  license:
+    name: Apache License
+  version: v1
+host: api.localhost
+schemes:
+  - http
+basePath: /v1
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /products/:
+    get:
+      operationId: products_list
+      summary: List products
+      description:
+        Get a list of products with optional filtering by price, rating,
+        and reviews count.
+      parameters:
+        - name: min_price
+          in: query
+          description: Minimum price
+          type: number
+        - name: max_price
+          in: query
+          description: Maximum price
+          type: number
+        - name: min_rating
+          in: query
+          description: Minimum rating
+          type: number
+        - name: min_reviews
+          in: query
+          description: Minimum number of reviews
+          type: integer
+        - name: ordering
+          in: query
+          description:
+            "Comma-separated list of fields to order by. Allowed: price,
+            -price, rating, -rating, reviews_count, -reviews_count, name, -name"
+          type: string
+      responses:
+        "200":
+          description: Successfully retrieved paginated list of products
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Product"
+      tags:
+        - products
+    parameters: []
+  /products/{id}/:
+    get:
+      operationId: products_read
+      summary: Retrieve product
+      description: Get details of a product by its ID.
+      parameters: []
+      responses:
+        "200":
+          description: Successfully retrieved product details
+          schema:
+            $ref: "#/definitions/Product"
+        "404":
+          description: Product not found
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+      tags:
+        - products
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+definitions:
+  Product:
+    required:
+      - name
+      - price
+      - discounted_price
+      - rating
+      - reviews_count
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        maxLength: 512
+        minLength: 1
+      price:
+        title: Price
+        type: string
+        format: decimal
+      discounted_price:
+        title: Discounted price
+        type: string
+        format: decimal
+      rating:
+        title: Rating
+        type: number
+      reviews_count:
+        title: Reviews count
+        type: integer
+        maximum: 2147483647
+        minimum: 0
+      created_at:
+        title: Created at
+        type: string
+        format: date-time
+        readOnly: true
