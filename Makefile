@@ -141,6 +141,11 @@ run-tests-app-dev: ## Run tests for the development environment
 	$(COMPOSE_DEV) exec backend sh -c \
 	"cd src && poetry run python manage.py test apps.$$app_name.tests"'
 
+.PHONY: parse-wb-products-dev
+parse-wb-products-dev: ## Parse WB Products in the development environment
+	@$(COMPOSE_DEV) exec backend sh -c \
+	"cd src && poetry run python manage.py parse_wb_products"
+
 
 #--------------- LINT/FORMAT COMMANDS ---------------#
 
