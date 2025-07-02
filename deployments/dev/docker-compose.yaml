@@ -9,19 +9,39 @@ services:
     command: ["nginx", "-g", "daemon off;"]
     hostname: ${DOCKER_NGINX_HOST}
     ports:
-      - ${APP_PORT}:${APP_PORT}
+      - ${APP_PORT}:${DOCKER_NGINX_PORT}
     environment:
       - TZ=${TZ}
-
-      - APP_PORT=${APP_PORT}
-      - DOCKER_NGINX_HOST=${DOCKER_NGINX_HOST}
-      - DOCKER_BACKEND_HOST=${DOCKER_BACKEND_HOST}
-      - DOCKER_FRONTEND_HOST=${DOCKER_FRONTEND_HOST}
-
       - BACKEND_BASE=${BACKEND_BASE}
       - FRONTEND_BASE=${FRONTEND_BASE}
+
+      - APP_PORT=${APP_PORT}
       - DOCKER_BACKEND_PORT=${DOCKER_BACKEND_PORT}
       - DOCKER_FRONTEND_PORT=${DOCKER_FRONTEND_PORT}
+      - DOCKER_BACKEND_HOST=${DOCKER_BACKEND_HOST}
+      - DOCKER_FRONTEND_HOST=${DOCKER_FRONTEND_HOST}
+    restart: unless-stopped
+    depends_on:
+      frontend:
+        condition: service_started
+      backend:
+        condition: service_started
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ../../
+      dockerfile: ./deployments/dev/images/frontend.Dockerfile
+    command: ["bun", "run", "dev"]
+    hostname: ${DOCKER_FRONTEND_HOST}
+    expose:
+      - ${DOCKER_FRONTEND_PORT}
+    volumes:
+      - ./../../frontend:/frontend
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      - HOST=0.0.0.0
+      - PORT=${DOCKER_FRONTEND_PORT}
     restart: unless-stopped
     depends_on:
       backend:
@@ -80,7 +100,7 @@ services:
     ports:
       - ${DOCKER_POSTGRES_PORT}:${DOCKER_POSTGRES_PORT}
     volumes:
-      - pg-data:/var/lib/postgresql/data/
+      - pg-data-dev:/var/lib/postgresql/data/
     environment:
       - TZ=${TZ}
       - POSTGRES_DB=${POSTGRES_DB}
@@ -106,4 +126,4 @@ services:
       start_period: 40s
 
 volumes:
-  pg-data:
+  pg-data-dev:
