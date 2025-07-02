@@ -36,8 +36,8 @@ clean: ## Clean up the production environment
 clean-volumes: ## Clean up the production environment volumes
 	@$(COMPOSE_PROD) down -v
 
-.PHONY: run-tests
-run-tests: ## Run tests for the production environment
+.PHONY: run-back-tests
+run-back-tests: ## Run backend (Django) tests for the production environment
 	@$(COMPOSE_PROD) exec backend sh -c \
 	"poetry run python manage.py test apps"
 
