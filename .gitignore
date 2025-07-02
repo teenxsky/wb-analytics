@@ -13,8 +13,6 @@ var/
 sdist/
 develop-eggs/
 .installed.cfg
-lib/
-lib64/
 
 # Installer logs
 pip-log.txt
@@ -52,6 +50,17 @@ mediafiles/
 frontend/dist/
 frontend/node_modules/
 frontend/.tmp/
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# next.js
+.next/
+out/
+
+# production
+frontend/build/
 
 # Virtual Environment
 venv/
@@ -96,3 +105,6 @@ pnpm-debug.log*
 
 # Environment
 .env**.local
+
+# Makefile temp
+.make*

@@ -6,6 +6,8 @@ services:
     build:
       context: ../../
       dockerfile: ./deployments/prod/images/nginx.Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
     command: ["nginx", "-g", "daemon off;"]
     hostname: ${DOCKER_NGINX_HOST}
     ports:
@@ -89,7 +91,7 @@ services:
     expose:
       - ${DOCKER_POSTGRES_PORT}
     volumes:
-      - pg-data:/var/lib/postgresql/data/
+      - pg-data-prod:/var/lib/postgresql/data/
     environment:
       - TZ=${TZ}
       - POSTGRES_DB=${POSTGRES_DB}
@@ -115,5 +117,5 @@ services:
       start_period: 40s
 
 volumes:
-  pg-data:
+  pg-data-prod:
   static_files:
