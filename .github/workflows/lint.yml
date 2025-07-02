@@ -1,0 +1,37 @@
+name: LINT
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Run linters
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.JS
+        uses: actions/setup-node@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Python dependencies
+        run: |
+          npm install -g prettier
+          pipx install ruff
+
+      - name: Run prettier lint (Frontend)
+        run: |
+          cd frontend
+          prettier --check .
+
+      - name: Run ruff lint (Backend)
+        run: |
+          cd backend
+          ruff check --output-format=github .
