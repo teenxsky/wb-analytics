@@ -105,6 +105,3 @@ pnpm-debug.log*
 
 # Environment
 .env**.local
-
-# Makefile temp
-.make*

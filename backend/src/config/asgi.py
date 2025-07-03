@@ -1,5 +1,5 @@
 """
-ASGI config for money_flow project.
+ASGI config for wb-analytics project.
 """
 
 import os
