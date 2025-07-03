@@ -1,5 +1,5 @@
 """
-WSGI config for money_flow project.
+WSGI config for wb-analytics project.
 """
 
 import os

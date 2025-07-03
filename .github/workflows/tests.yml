@@ -21,10 +21,10 @@ jobs:
           cp ./deployments/prod/conf/.env ./deployments/prod/conf/.env.local
 
       - name: Build
-        run: make build
+        run: make build ENV=prod
 
       - name: Up
-        run: make up
+        run: make up ENV=prod
 
       - name: Test
-        run: make run-back-tests
+        run: make run-tests ENV=prod

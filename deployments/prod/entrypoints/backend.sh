@@ -1,6 +1,6 @@
 #!/bin/sh
 
-poetry run python manage.py migrate
-poetry run python manage.py collectstatic --no-input
+poetry run python src/manage.py migrate
+poetry run python src/manage.py collectstatic --no-input
 
 exec "$@"

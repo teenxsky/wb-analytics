@@ -37,16 +37,16 @@ COPY ${LOCAL_BACKEND_PATH}/pyproject.toml .
 COPY ${LOCAL_BACKEND_PATH}/poetry.lock .
 RUN poetry install --no-interaction --no-cache
 
-COPY ${LOCAL_BACKEND_PATH}/src .
+COPY ${LOCAL_BACKEND_PATH}/ .
 COPY ${LOCAL_ENTRYPOINTS_PATH}/backend.sh .
 
 RUN chmod +x /backend/backend.sh
 
-RUN mkdir -p /backend/staticfiles
+RUN mkdir -p /backend/src/staticfiles
 
 RUN addgroup --system app && adduser --system --ingroup app app
 RUN chown -R app:app /backend
-RUN chown -R app:app /backend/staticfiles
+RUN chown -R app:app /backend/src/staticfiles
 USER app
 
 ENTRYPOINT ["/backend/backend.sh"]
