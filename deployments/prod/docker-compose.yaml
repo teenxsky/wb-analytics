@@ -13,7 +13,7 @@ services:
     ports:
       - ${APP_PORT}:${APP_PORT}
     volumes:
-      - static_files:/backend/staticfiles/
+      - static-files-prod:/backend/staticfiles/
     environment:
       - TZ=${TZ}
       - APP_PORT=${APP_PORT}
@@ -47,16 +47,20 @@ services:
         "3000",
         "--max-requests-jitter",
         "1500",
+        "--timeout",
+        "30",
         "--bind",
         "0.0.0.0:${DOCKER_BACKEND_PORT}",
         "--pid",
         "gunicorn.pid",
+        "--chdir",
+        "/backend/src"
       ]
     hostname: ${DOCKER_BACKEND_HOST}
     expose:
       - ${DOCKER_BACKEND_PORT}
     volumes:
-      - static_files:/backend/staticfiles/
+      - static-files-prod:/backend/src/staticfiles/
     environment:
       - APP_PORT=${APP_PORT}
       - BACKEND_BASE=${BACKEND_BASE}
@@ -118,4 +122,4 @@ services:
 
 volumes:
   pg-data-prod:
-  static_files:
+  static-files-prod:
