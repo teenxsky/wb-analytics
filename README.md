@@ -98,7 +98,11 @@ http://api.localhost/admin/products/product/parse_wb/
 - Or via CLI:
 
 ```bash
-make parse-wb-products query=<your search query: str> pages=<page count: int> limit=<products per page: int>
+make parse-wb-products \
+  query=<your search query: str> \
+  pages=<page count: int> \
+  limit=<products per page: int> \
+  ENV=prod
 ```
 
 ### 5. Access the application
